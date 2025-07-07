@@ -4,6 +4,8 @@ clear all
 close all
 
 addpath('simulator');
+addpath('casadi');
+addpath(genpath('casadi'))
 
 %% Define the simulation
 

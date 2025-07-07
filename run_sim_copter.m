@@ -8,10 +8,10 @@ addpath('simulator');
 %% Define the simulation
 
 % Define the hardware architecture
-%r = robots.floating_hex();
+r = robots.quadrotor();
 %r = robots.octorotor_assymmetric();
-%r = robots.quadrotor();
-r = robots.tilted_hex(true);
+%r = robots.floating_hex();
+%r = robots.tilted_hex(true);
 %r = robots.odar();
 
 % Define the world
@@ -21,7 +21,7 @@ w = worlds.empty_world(average_wind, false);
 %w = worlds.sloped_wall_20_deg(average_wind, false);
 
 % Define the controller
-c = controllers.fully_actuated(r, attitude_strategies.FullTilt);
+c = controllers.fully_actuated(r, attitude_strategies.Full);
 
 % Define the simulation object
 sim = simulation(r, c, w);
@@ -32,28 +32,15 @@ pos = [0; 0; -4];
 vel = [0; 0; 0];
 rpy = [0; 0; 0];
 omega = [0; 0; 0];
-sim.Multirotor.SetInitialState(pos, vel, rpy, omega);
+lastThrust = [0; 0; 0];
+sim.Multirotor.SetInitialState(pos, vel, rpy, omega, lastThrust);
 
 %% Get the controller response(s)
 
-% Simulate trajectory following
-%[traj, total_time] = trajectories.copter_paint_air();
-[traj, total_time] = trajectories.copter_two_points();
-sim.SetTotalTime(total_time);
-pos_thresh = 0.2;
-rpy_thresh = 3; 
-force_thresh = 0.2;
-sim.SimulateTrajectory(traj, pos_thresh, rpy_thresh, force_thresh);
-
-% Or simulate attitude response
-%sim.SetTotalTime(10);
-%figure; 
-%sim.SimulateAttitudeResponse([0; 0; -90], true);
-
-% Or simulate position response
-%sim.SetTotalTime(10);
-%figure;
-%sim.SimulatePositionResponse([17; 8; -2], -45, true);
+% Simulate position response
+sim.SetTotalTime(10);
+figure;
+sim.SimulatePositionResponse([17; 8; -2], -45, true);
 
 %% Draw Additional plots
 
